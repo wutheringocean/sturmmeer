@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="소개와 좋아하는 것, 짧은 기록을 담은 개인 페이지">
+  <title>나의 작은 공간</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header><span class="brand"><span class="dot" aria-hidden="true"></span> MY LITTLE SPACE</span><span class="header-note">조금씩, 나를 담아가는 곳</span></header>
+    <main>
+      <section aria-labelledby="page-title">
+        <p class="eyebrow">A PERSONAL PAGE</p>
+        <h1 id="page-title">안녕,<br>나의 작은 공간에.</h1>
+        <p class="intro">나에 대한 이야기와 좋아하는 것들.<br>아래의 문을 하나씩 열어보세요.</p>
+        <nav aria-label="글 선택">
+          <button class="entry" type="button" data-page="about" aria-controls="reading-window" aria-expanded="false"><span class="number">01</span><span class="label">나의 소개</span><span class="arrow" aria-hidden="true">↗</span></button>
+          <button class="entry" type="button" data-page="favorites" aria-controls="reading-window" aria-expanded="false"><span class="number">02</span><span class="label">좋아하는 것들</span><span class="arrow" aria-hidden="true">↗</span></button>
+          <button class="entry" type="button" data-page="notes" aria-controls="reading-window" aria-expanded="false"><span class="number">03</span><span class="label">짧은 기록</span><span class="arrow" aria-hidden="true">↗</span></button>
+        </nav>
+      </section>
+      <div class="stage">
+        <div class="empty" id="empty-state"><div class="empty-icon" aria-hidden="true"></div><p>궁금한 이야기를 눌러보세요.<br>작은 창 하나가 열릴 거예요.</p></div>
+        <dialog id="reading-window" aria-labelledby="window-title" aria-describedby="window-copy">
+          <div class="window-bar"><span class="window-caption">a little note</span><button class="close" id="close-window" type="button" aria-label="글 창 닫기">×</button></div>
+          <div class="window-body" id="window-body"><p class="category" id="window-category"></p><h2 id="window-title" tabindex="-1"></h2><p class="copy" id="window-copy"></p><p class="sample">예시 글 · 나만의 이야기로 바꿔주세요.</p></div>
+        </dialog>
+      </div>
+    </main>
+    <footer><span>작은 이야기들을 모아두는 곳.</span><span>Made of little things.</span></footer>
+  </div>
+  <script>
+    // 이곳의 title(제목), text(본문)를 수정하면 각 버튼의 글이 바뀝니다.
+    // 본문의 줄바꿈은 그대로 표시됩니다.
+    const pages = {
+      about: {
+        category: '01 / ABOUT ME',
+        title: '나를 소개합니다.',
+        text: `안녕하세요. 이곳은 나의 이야기를 조금씩 담아가는 작은 공간입니다.
+
+아직은 빈칸이 많지만, 좋아하는 것과 기억하고 싶은 순간들로 천천히 채워보려고 해요.
+
+들러주셔서 반가워요. 편하게 머물다 가세요.`
+      },
+      favorites: {
+        category: '02 / THINGS I LOVE',
+        title: '좋아하는 것들.',
+        text: `햇빛이 잘 드는 자리.
+아무 계획 없이 걷는 오후.
+마음에 오래 남는 문장 하나.
+
+아주 대단한 건 아니어도, 하루를 조금 더 좋게 만들어주는 것들을 좋아합니다.
+
+이곳에 나만의 취향을 하나씩 적어보세요.`
+      },
+      notes: {
+        category: '03 / LITTLE NOTES',
+        title: '첫 번째 기록.',
+        text: `나만의 작은 페이지를 만들기로 했다.
+
+거창한 이야기가 아니어도 괜찮으니까, 떠오르는 생각을 짧게라도 남겨보기로.
+
+이 작은 시작이 어디로 이어질지 궁금하다.`
+      }
+    };
+    const readingWindow = document.getElementById('reading-window');
+    const entries = [...document.querySelectorAll('[data-page]')];
+    const emptyState = document.getElementById('empty-state');
+    const title = document.getElementById('window-title');
+    let lastButton = null;
+    function syncClosedState() {
+      emptyState.hidden = false;
+      entries.forEach(button => button.setAttribute('aria-expanded', 'false'));
+      if (lastButton) lastButton.focus({ preventScroll:true });
+    }
+    entries.forEach(button => button.addEventListener('click', () => {
+      const page = pages[button.dataset.page];
+      lastButton = button;
+      title.textContent = page.title;
+      document.getElementById('window-category').textContent = page.category;
+      document.getElementById('window-copy').textContent = page.text;
+      emptyState.hidden = true;
+      entries.forEach(entry => entry.setAttribute('aria-expanded', String(entry === button)));
+      if (!readingWindow.open) readingWindow.show();
+      document.getElementById('window-body').scrollTop = 0;
+      title.focus({ preventScroll:true });
+    }));
+    document.getElementById('close-window').addEventListener('click', () => readingWindow.close());
+    readingWindow.addEventListener('close', syncClosedState);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && readingWindow.open) { event.preventDefault(); readingWindow.close(); }
+    });
+  </script>
+</body>
+</html>
