@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="page">
-    <header><span class="brand"><span class="dot" aria-hidden="true"></span> MY LITTLE SPACE</span><span class="header-note">조금씩, 나를 담아가는 곳</span></header>
+    <header><span class="brand"><span class="dot" aria-hidden="true"></span> MY LITTLE SPACE</span></header>
     <main>
       <section aria-labelledby="page-title">
         <p class="eyebrow">A PERSONAL PAGE</p>
@@ -21,16 +21,13 @@
           <button class="entry" type="button" data-page="notes" aria-controls="reading-window" aria-expanded="false"><span class="number">03</span><span class="label">짧은 기록</span><span class="arrow" aria-hidden="true">↗</span></button>
         </nav>
       </section>
-      <div class="stage">
-        <div class="empty" id="empty-state"><div class="empty-icon" aria-hidden="true"></div><p>궁금한 이야기를 눌러보세요.<br>작은 창 하나가 열릴 거예요.</p></div>
-        <dialog id="reading-window" aria-labelledby="window-title" aria-describedby="window-copy">
-          <div class="window-bar"><span class="window-caption">a little note</span><button class="close" id="close-window" type="button" aria-label="글 창 닫기">×</button></div>
-          <div class="window-body" id="window-body"><p class="category" id="window-category"></p><h2 id="window-title" tabindex="-1"></h2><p class="copy" id="window-copy"></p><p class="sample">예시 글 · 나만의 이야기로 바꿔주세요.</p></div>
-        </dialog>
-      </div>
     </main>
     <footer><span>작은 이야기들을 모아두는 곳.</span><span>Made of little things.</span></footer>
   </div>
+  <dialog id="reading-window" aria-labelledby="window-title" aria-describedby="window-copy">
+    <div class="window-bar"><span class="window-caption">a little note</span><button class="close" id="close-window" type="button" aria-label="글 창 닫기">×</button></div>
+    <div class="window-body" id="window-body"><p class="category" id="window-category"></p><h2 id="window-title" tabindex="-1"></h2><p class="copy" id="window-copy"></p><p class="sample">예시 글 · 나만의 이야기로 바꿔주세요.</p></div>
+  </dialog>
   <script>
     // 이곳의 title(제목), text(본문)를 수정하면 각 버튼의 글이 바뀝니다.
     // 본문의 줄바꿈은 그대로 표시됩니다.
@@ -67,11 +64,9 @@
     };
     const readingWindow = document.getElementById('reading-window');
     const entries = [...document.querySelectorAll('[data-page]')];
-    const emptyState = document.getElementById('empty-state');
     const title = document.getElementById('window-title');
     let lastButton = null;
     function syncClosedState() {
-      emptyState.hidden = false;
       entries.forEach(button => button.setAttribute('aria-expanded', 'false'));
       if (lastButton) lastButton.focus({ preventScroll:true });
     }
@@ -81,7 +76,6 @@
       title.textContent = page.title;
       document.getElementById('window-category').textContent = page.category;
       document.getElementById('window-copy').textContent = page.text;
-      emptyState.hidden = true;
       entries.forEach(entry => entry.setAttribute('aria-expanded', String(entry === button)));
       if (!readingWindow.open) readingWindow.show();
       document.getElementById('window-body').scrollTop = 0;
